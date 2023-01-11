@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Land Digitization Using Blockchain </title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+      <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  </head>
+  <body>
+
+    <input type="checkbox" id="check">
+    <!--header area start-->
+    <header>
+      <label for="check">
+        <i class="fas fa-bars" id="sidebar_btn"></i>
+      </label>
+      <div class="left_area">
+        <h3>Land Digitization </br>Using<span> Blockchain</span></h3>
+      </div>
+      <div class="right_area">
+
+      </div>
+    </header>
+    <!--header area end-->
+    <!--sidebar start-->
+    <div class="sidebar">
+      <center>
+        <img src="../assets/1.png" class="profile_image" alt="">
+        <h4 id="setusername"></h4>
+        <input type="button" onclick="logOut()" value="Logout" class="logout_button">
+      </center>
+      <a href="Notification.html"><i class="fas fa-bell"></i><span>Notification</span></a>
+      <a href="landOwnershipHistory.html"><i class="fas fa-history"></i><span>Land Owner History</span></a>
+      <a href="LandOwnership.html"><i class="fas fa-id-card"></i><span>Proof of Ownership</span></a>
+      <a href="LandCorrectionForm.html"><i class="fas fa-check-square"></i><span>Land Data Correction</span></a>
+      <a href="OwnershipTransfer.html"><i class="fas fa-exchange-alt"></i><span>Transfer Of Ownership</span></a>
+      <a href="MyAccount.html"><i class="fas fa-user"></i><span>My Account</span></a>
+    </div>
+    <!--sidebar end-->
+
+    <div class="content">
+          <div class="card">
+            <h2>My Account</h2>
+            <table class="table_form">
+              <tr>
+                <td>Name</td>
+                <td><input id="name" type="text" name="" value="" class="user_input" readonly></td>
+              </tr>
+              <tr>
+                <td>Adhar Number</td>
+                <td><input id="aadharNo" type="text" class="user_input" readonly></td>
+              </tr>
+              <tr>
+                <td>DOB</td>
+                <td><input id="dob" type="text"  class="user_input" readonly></td>
+              </tr>
+              <tr>
+                <td>Gender</td>
+                <td><input id="gender" type="text" class="user_input" readonly></td>
+              </tr>
+
+              <tr>
+                <td>Occupation</td>
+                <td><input id="occupation" type="text" name="" value="" class="user_input" readonly></td>
+              </tr>
+              <tr>
+                <td>Mobile Number</td>
+                <td><input id="mobileNo" type="text" name="" value="" class="user_input" readonly></td>
+              </tr>
+
+              <tr>
+                <td>Address</td>
+                <td><input id="address" type="text" name="" value="" class="user_input" readonly></td>
+              </tr>
+              <tr>
+                <td>Mail Id</td>
+                <td><input id="emailId" type="text" name="" value="" class="user_input" readonly></td>
+              </tr>
+
+              <tr>
+                <td>Id proof</td>
+                <td><div id="PDFview">
+                <iframe src="" type="application/pdf" width="100%" height="100%" style="overflow: auto;">
+    </iframe>
+            </div></td>
+              </tr>
+              <tr>
+                <td>Land Ids</td>
+                  <td><textarea id="landIds" name="" value="" class="user_input" readonly></textarea></td>
+              </tr>
+
+              <tr>
+                <td>Password</td>
+                <td><input id="password" type="text" name="" value="" class="user_input" readonly></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+              </tr>
+  </table>
+
+          </div>
+  </div>
+  </body>
+
+<script>
+    $(document).ready(function(){
+            //get uerid
+            var id = sessionStorage.getItem('Login_User_Id');
+            var role = sessionStorage.getItem('Login_role');
+            if(role===null || id===null || role!='User'){
+                alert("Authnetication Failed!!");
+                window.location.href = "../login/index.html";
+                return;
+            }
+            $('#setusername').text(sessionStorage.getItem('Login_username'));         $.getJSON("http://localhost:8080/UserDetails/"+id, function(data){
+             $("#name").val(data["name"]);
+             $("#aadharNo").val(data["aadharNo"]);
+             $("#dob").val(data["dob"]);
+             $("#gender").val(data["gender"]);
+             $("#occupation").val(data["occupation"]);
+             $("#mobileNo").val(data["mobileNo"]);
+             $("#address").val(data["address"]);
+             $("#emailId").val(data["emailId"]);
+             $("#idProofType").val(data["idProofType"]);
+             $("#password").val(data["password"]);
+
+             //    "documentName": "Sample.pdf",
+//    "documentType": "application/pdf",
+//    "data
+             var arrrayBuffer = base64ToArrayBuffer(data["data"]); //data is the base64 encoded string
+                            var blob = new Blob([arrrayBuffer], {type: "application/pdf"});
+                            var file = window.URL.createObjectURL(blob);
+                            document.querySelector("iframe").src = file;
+                            function base64ToArrayBuffer(base64) {
+                                var binaryString = window.atob(base64);
+                                var binaryLen = binaryString.length;
+                                var bytes = new Uint8Array(binaryLen);
+                                for (var i = 0; i < binaryLen; i++) {
+                                    var ascii = binaryString.charCodeAt(i);
+                                    bytes[i] = ascii;
+                                }
+                                return bytes;
+                            }
+         });
+        $.getJSON("http://localhost:8080/OwnedLands/"+id,function(data){
+            console.log(data);
+            var s="";
+            $.each(data, function(i, value){
+                    s+=value+"\n";
+                });
+            $("#landIds").val(s);
+        });
+      });
+    
+    function logOut(){
+        console.log("Logout clicked");
+        sessionStorage.removeItem('Login_User_Id');
+        sessionStorage.removeItem('Login_role');
+        sessionStorage.removeItem('Login_username');
+         window.location.href = "../login/index.html";
+    }
+</script>
+
+</html>
+
+
+
+<!---->

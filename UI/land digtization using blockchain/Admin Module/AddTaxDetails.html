@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Land Digitization Using Blockchain </title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  </head>
+  <body>
+
+    <input type="checkbox" id="check">
+    <!--header area start-->
+    <header>
+      <label for="check">
+        <i class="fas fa-bars" id="sidebar_btn"></i>
+      </label>
+      <div class="left_area">
+        <h3>Land Digitization </br>Using<span> Blockchain</span></h3>
+      </div>
+      <div class="right_area">
+
+      </div>
+    </header>
+    <!--header area end-->
+    <!--sidebar start-->
+    <div class="sidebar">
+      <center>
+        <img src="../assets/1.png" class="profile_image" alt="">
+                <h4 id="setusername"></h4>
+        <input type="button" onclick="logOut()" value="Logout" class="logout_button">
+        </center>
+        <a href="Dashboard.html"><i class="fas fa-desktop"></i><span>Dashboard</span></a>
+        <a href="NewLandRec.html"><i class="fas fa-plus-square"></i><span>Add New land Record</span></a>
+        <a href="LoanRecords.html"><i class="fas fa-money-check"></i><span>Loan Details</span></a>
+        <a href="TaxRecords.html"><i class="fas fa-rupee-sign"></i><span>Tax Details</span></a>
+        <a href="CorrectionRequest.html"><i class="fas fa-clipboard-check"></i><span>Correction Request</span></a>
+        <a href="UserDetails.html"><i class="fas fa-user-plus"></i><span>User Details</span></a>
+        <a href="settings.html"><i class="fas fa-sliders-h"></i><span>Settings</span></a>
+    </div>
+    <!--sidebar end-->
+
+    <div class="content">
+        <form id="taxDataForm" action="">
+              <div class="card">
+                <h2>Add Loan Details</h2>
+                  <table class="table_form">
+                    <tr>
+                      <td> Tax Id</td>
+                      <td> User Id</td>
+                      <td> Land Id</td>
+                    </tr>
+
+                    <tr>
+                      <td><input id="taxId" type="number" min="0" step="1" oninput="validity.valid||(value='');" name="" value="" class="user_input" required></td>
+                      <td><input id="userId" type="number" min="0" step="1" oninput="validity.valid||(value='');" name="" value="" class="user_input" required></td>
+                      <td><input id="landId" type="number" min="0" step="1" oninput="validity.valid||(value='');" name="" value="" class="user_input" required></td>
+                    </tr>
+
+                    <tr><td colspan="3"><hr></td></tr>
+
+                    <tr>
+                      <td> Tax Amount</td>
+                      <td> Pending Tax Duration (in months)</td>
+                    </tr>
+
+                    <tr>
+                      <td><input id="taxAmount" type="number" min="0" step="1" oninput="validity.valid||(value='');" name="" value="" class="user_input" required></td>
+                      <td><input id="taxDuration" type="number" min="0" step="1" oninput="validity.valid||(value='');" name="" value="" class="user_input" required></td>
+                    </tr>
+
+                    <tr><td colspan="3"><hr></td></tr>
+
+                      <tr>
+                        <td> Tax Description</td>
+                      </tr>
+                      <tr>
+                        <td colspan="3"><textarea id="taxDescription" type="text" rows="25" cols="300" name="" value="" class="user_input"  required></textarea></td>
+                      </tr>
+                  </table>
+               </div>
+                      <input id="" type="submit" name="" value=" Add Details" class="Upload_btn" required>
+        </form>
+      </div>
+  </body>
+
+
+<script type="text/javascript" language="javascript">
+$(document).ready(function(){
+        //get uerid
+            var id = sessionStorage.getItem('Login_Admin_Id');
+            var role = sessionStorage.getItem('Login_role');
+         if(role===null || id===null || role!='Admin'){
+                if(role!='Tahsildar') {
+                alert("Authnetication Failed!!");
+                window.location.href = "../login/LoginAdministrator.html";
+                return;
+                }
+            }
+        console.log(sessionStorage.getItem('Login_Admin_username'));
+        $('#setusername').text(sessionStorage.getItem('Login_Admin_username'));
+});
+
+            $( "#taxDataForm" ).submit(function( event ) {
+                //data to pass
+            var data = {
+                "id" : $('#taxId').val(),
+                "userId" : $('#userId').val(),
+                "landId": $('#landId').val(),
+                "amount" : $('#taxAmount').val(),
+                "duration" : $('#taxDuration').val(),
+                "description" : $('#taxDescription').val()
+            };
+                 //alert(JSON.stringify(data));
+            $.ajax({
+                type: "POST",
+                url: "http://localhost:8080/Taxes",
+                contentType : "application/json",
+                dataType : 'json',
+                data: JSON.stringify(data),
+                success: function(response) {
+                    alert("Tax Data saved Sucessfully!!! ");
+                },
+                error: function(response) {
+                    console.log(JSON.stringify(response));
+                }
+            });
+        });
+    
+    
+     function logOut(){
+        console.log("clicked");
+        sessionStorage.removeItem('Login_Admin_Id');
+        sessionStorage.removeItem('Login_Admin_username');
+        sessionStorage.removeItem('Login_role');
+        sessionStorage.removeItem('Login_Administrator_System_Address');
+            window.location.href = "../login/LoginAdministrator.html";
+    }
+</script>
+
+</html>
+
+
+
+-->

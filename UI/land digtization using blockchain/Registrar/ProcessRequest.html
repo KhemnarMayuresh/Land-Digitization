@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Land Digitization Using Blockchain </title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+      <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    </head>
+  <body>
+
+    <input type="checkbox" id="check">
+    <!--header area start-->
+    <header>
+      <label for="check">
+        <i class="fas fa-bars" id="sidebar_btn"></i>
+      </label>
+      <div class="left_area">
+        <h3>Land Digitization </br>Using<span> Blockchain</span></h3>
+      </div>
+      <div class="right_area">
+
+      </div>
+    </header>
+    <!--header area end-->
+    <!--sidebar start-->
+    <div class="sidebar">
+      <center>
+        <img src="../assets/1.png" class="profile_image" alt="">
+          <h4 id="setusername"></h4>
+        <input type="button" onclick="logOut()" value="Logout" class="logout_button">
+    </center>
+    <a href="Dashboard.html"><i class="fas fa-desktop"></i><span>Dashboard</span></a>
+    <a href="OwnershipTransfer.html"><i class="fas fa-exchange-alt"></i><span>Ownership Transfer</span></a>
+    <a href="MyAccount.html"><i class="fas fa-user"></i><span>My Account</span></a>
+]
+    </div>
+    <!--sidebar end-->
+
+    <div class="content">
+        <form id="TransactionForm" action="">
+          <div class="card">
+            <h2>Process Request</h2><br/>
+            <div>
+              <table class="table_form">
+
+                <tr>
+                    <td> Transaction Id</td>
+                    <td><input id="transactionId" type="text" name="" class="user_input" readonly/></td>
+                </tr>
+                <tr>
+                    <td> Land Id </td>
+                    <td><input id="landId" type="text" name="" class="user_input" readonly/></td>
+                </tr>
+                <tr>
+                    <td> Area</td>
+                    <td><input id="area" type="text" name="" class="user_input" readonly/></td>
+                </tr>
+                <tr>
+                    <td> Owner Name</td>
+                    <td><input id="ownername" type="text" name="" class="user_input" readonly/></td>
+                </tr>
+                <tr>
+                    <td> Buyer Id</td>
+                    <td><input id="buyerId" type="text" name="" class="user_input" readonly/></td>
+                </tr>
+                <tr>
+                    <td> Buyer name</td>
+                    <td><input id="buyerName" type="text" name="" class="user_input" readonly/></td>
+                </tr>
+                <tr>
+                    <td> Buyer Username</td>
+                    <td><input id="buyerUsername" type="text" name="" class="user_input" readonly/></td>
+                </tr>
+                <tr>
+                    <td> Market Price</td>
+                    <td><input id="marketPrice" type="text" name="" class="user_input" readonly/></td>
+                </tr>
+                <tr>
+                    <td> Final Price</td>
+                    <td><input id="finalPrice" type="text" name="" class="user_input" readonly/></td>
+                </tr>
+                <tr><td colspan="3"><hr/></td></tr>
+                  <tr><td><h4>Upload Sale deed agriment</h4></td></tr>
+                <tr>
+                    <td>Select Document Scan Copy </td>
+                    <td><input id="file" type="file" name="file" value="file" class="user_input" required></td>
+                      <td></td>
+                </tr>
+              </table>
+            </div>
+              <div>
+                  <input type="submit" value=" Complete Transaction " class="Upload_btn">
+                </div>
+           </div>
+        </form>
+  </div>
+
+     <script>
+        var ownerAddress=sessionStorage.getItem('Login_Administrator_System_Address');
+        $(document).ready(function(){
+             //Filter values
+//        var id = sessionStorage.getItem('Login_Admin_Id');
+//        var role = sessionStorage.getItem('Login_role');
+//        if(role===null || id===null || role!='Registrar'){
+//            alert("Authnetication Failed!!");
+//            window.location.href = "../login/LoginAdministrator.html";
+//            return;
+//        }
+
+        console.log(sessionStorage.getItem('Login_Admin_username'));
+        $('#setusername').text(sessionStorage.getItem('Login_Admin_username'));
+
+
+            const urlParam=new URLSearchParams(location.search);
+            var id=urlParam.get('id');
+
+            $.getJSON("http://localhost:8080/TransactionRequest/"+id, function(data){ setData(data); });
+
+            console.log(sessionStorage.getItem('Login_Admin_username'));
+            $('#setusername').text(sessionStorage.getItem('Login_Admin_username'));
+        });
+
+         function setData(data){
+             //set session Storage
+             console.log(data);
+             $("#transactionId").val(data['id']);
+             $("#landId").val(data['landId']);
+             $("#area").val(data['areaOfLand']);
+             $("#ownername").val(data['ownerName']);
+             $("#buyerId").val(data['buyerId']);
+             $("#buyerName").val(data['buyername']);
+             $("#buyerUsername").val(data['buyerusername']);
+             $("#marketPrice").val(data['marketPrice']);
+             $("#finalPrice").val(data['finalPrice']);
+         }
+
+   $( "#TransactionForm" ).submit(function( event ) {
+        console.log(ownerAddress);
+        var form = new FormData();
+        form.append("ownerAddress",ownerAddress);
+        form.append("landId",$("#landId").val());
+        form.append("toId",$("#buyerId").val());
+        form.append("transactionId",$("#transactionId").val());
+        form.append("file",$('#file')[0].files[0]);
+		//Transact data to blockchain
+		$.ajax({
+                type: "POST",
+                url: "http://localhost:8080/LandTransfer",
+                contentType : "application/json",
+                dataType : 'json',
+                data: form,
+                success: function(response) {
+                    alert("Transaction Completed Sucessfully!!! ");
+                },
+                error: function(response) {
+                    console.log(JSON.stringify(response));
+                }
+            });
+         });
+         
+    function logOut(){
+        console.log("clicked");
+        sessionStorage.removeItem('Login_Admin_Id');
+        sessionStorage.removeItem('Login_Admin_username');
+        sessionStorage.removeItem('Login_role');
+        sessionStorage.removeItem('Login_Administrator_System_Address');
+            window.location.href = "../login/LoginAdministrator.html";
+    }
+    </script>
+</body>
+</html>
+
+
+
+-->

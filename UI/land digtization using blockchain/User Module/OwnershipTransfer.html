@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Land Digitization Using Blockchain </title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+      <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+   </head>
+  <body>
+
+    <input type="checkbox" id="check">
+    <!--header area start-->
+    <header>
+      <label for="check">
+        <i class="fas fa-bars" id="sidebar_btn"></i>
+      </label>
+      <div class="left_area">
+        <h3>Land Digitization </br>Using<span> Blockchain</span></h3>
+      </div>
+      <div class="right_area">
+
+      </div>
+    </header>
+    <!--header area end-->
+    <!--sidebar start-->
+    <div class="sidebar">
+      <center>
+        <img src="../assets/1.png" class="profile_image" alt="">
+        <h4 id="setusername"></h4>        
+        <input type="button" onclick="logOut()" value="Logout" class="logout_button">
+      </center>
+      <a href="Notification.html"><i class="fas fa-bell"></i><span>Notification</span></a>
+      <a href="landOwnershipHistory.html"><i class="fas fa-history"></i><span>Land Owner History</span></a>
+      <a href="LandOwnership.html"><i class="fas fa-id-card"></i><span>Proof of Ownership</span></a>
+      <a href="LandCorrectionForm.html"><i class="fas fa-check-square"></i><span>Land Data Correction</span></a>
+      <a href="OwnershipTransfer.html"><i class="fas fa-exchange-alt"></i><span>Transfer Of Ownership</span></a>
+      <a href="MyAccount.html"><i class="fas fa-user"></i><span>My Account</span></a>
+    </div>
+    <!--sidebar end-->
+
+    <div class="content">
+
+    <form id="ownershipForm" action="">
+          <div class="card">
+            <h2>Land Ownership Transfer</h2>
+            <table class="table_form">
+              <tr>
+                <td>Select your Land Id</td>
+                <td><select id="landId" class="dropDown_list" oninput="validity.valid||(value='');" name="" value=""></select></td>
+              </tr>
+                <tr><td colspan="2"><hr></td></tr>
+                <tr><td><h4>Enter your Land Details</h4></td></tr>
+              <tr>
+                <td>Survey Number</td>
+                <td><input id="surveyNumber" type="number"  min="0" step="1" oninput="validity.valid||(value='');" name="" value="" class="user_input" required></td>
+              </tr>
+              <tr>
+                <td>Registration Number</td>
+                <td><input id="registrationNo" type="number"  min="0" step="1" oninput="validity.valid||(value='');" name="" value="" class="user_input" required></td>
+                </tr>
+                <tr>
+                  <td>Registration Year</td>
+                    <td> <select id="registrationYear"  class="dropDown_list" required>
+                    <option value="Please Select Registration year">Please Select Registration year</option>
+                    </select></td>
+                </tr>
+                <tr>
+                  <td>Area of land</td>
+                  <td><input id="areaOfLand" type="number" min="0" step="0.01" oninput="validity.valid||(value='');" name="" value="" class="user_input" style="width:65%;" required>
+                  <select id="areaOfLandM" name="" class="dropDown_list" style="width: 10%;" required>
+                      <option value="sq.ft" selected="selected"> Square Feet</option>
+                      <option value="sq.m">Square Meter</option>
+                      <option value="acres">Acre</option>
+                      <option value="hectare">Hectare</option>
+                  </select></td>
+                </tr>
+
+                <tr><td colspan="2"><hr></td></tr>
+                <tr>
+                  <td>Enter your Full Name</td>
+                    <td><input id="name" type="text" name="" value="" class="user_input" required></td>
+                </tr>
+                <tr>
+                  <td>Buyer id</td>
+                  <td><input id="buyerId" type="number"  min="0" step="1" oninput="validity.valid||(value='');" name="" value="" class="user_input" required></td>
+                </tr>
+                <tr>
+                <td>Buyer Username</td>
+                  <td><input id="buyerUsername" type="text" name="" value="" class="user_input" required></td>
+                </tr>
+                <tr>
+                  <td>Buyer Full Name</td>
+                  <td><input id="buyerName" type="text" name="" value="" class="user_input" required></td>
+                </tr>
+                <tr><td colspan="2"><hr></td></tr>
+                <tr><td><h4>Enter Price Details (in RS/- )</h4></td></tr>
+                <tr>
+                  <td>Market Amount</td>
+                  <td><input id="marketPrice" type="number"  min="0" step="1" oninput="validity.valid||(value='');" name="" value="" class="user_input" required></td>
+                </tr>
+                <tr>
+                  <td>Final Amount</td>
+                  <td><input id="price" type="number"  min="0" step="1" oninput="validity.valid||(value='');" name="" value="" class="user_input" required></td>
+                </tr>
+            </table>
+
+          </div>
+                  <input id="" type="submit" name="" value="Add" class="Upload_btn" required>
+    </form>
+  </div>
+  </body>
+
+<script>
+    $(document).ready(function(){
+            //get uerid
+            var id = sessionStorage.getItem('Login_User_Id');
+            var role = sessionStorage.getItem('Login_role');
+            if(role===null || id===null || role!='User'){
+                alert("Authnetication Failed!!");
+                window.location.href = "../login/index.html";
+                return;
+            }
+        $('#setusername').text(sessionStorage.getItem('Login_username'));
+        for(i=2020;i>1907;i--)
+            $('#registrationYear').append(new Option(i,i));
+
+        $.getJSON("http://localhost:8080/OwnedLands/"+id,function(data){
+            console.log(id,data);
+            $.each(data, function(i, value){
+                    $('#landId').append(new Option(value,value));
+                });
+        });
+    });
+
+    $("#ownershipForm").submit(function(event){
+        console.log("Clicked");
+        var data={
+            "landId":$("#landId").val(),
+            "areaOfLand":$("#areaOfLand").val()+" "+$("#areaOfLandM").val(),
+            "ownerName":$("#name").val(),
+            "buyerId":$("#buyerId").val(),
+            "buyerusername":$("#buyerUsername").val(),
+            "buyername":$("#buyerName").val(),
+            "marketPrice":$("#marketPrice").val(),
+            "finalPrice":$("#price").val()
+        }
+        console.log(JSON.stringify(data));
+                $.ajax({
+                type: "POST",
+                url: "http://localhost:8080/TransactionRequest",
+                contentType : "application/json",
+                dataType: 'text',           //return data is text so
+                data: JSON.stringify(data),
+                success: function(response) {
+                    alert(response);
+                },
+                error: function(response) {
+                    console.log(JSON.stringify(response));
+                }
+            });
+
+        //prevetn page reloading
+        event.preventDefault();
+    });
+    
+    function logOut(){
+        console.log("Logout clicked");
+        sessionStorage.removeItem('Login_User_Id');
+        sessionStorage.removeItem('Login_role');
+        sessionStorage.removeItem('Login_username');
+         window.location.href = "../login/index.html";
+    }
+</script>
+</html>
+
+
+
+<!---->

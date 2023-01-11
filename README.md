@@ -4,6 +4,8 @@
 Smartcontracts - solidity smart contract files used in project.
 UI - HTML pages used for front-end UI part of project. 
 
+youtube link: https://www.youtube.com/watch?v=vpED3zYINtU
+
 ### Hardware Used
 The system has following specifications: 
 - 4GB RAM
